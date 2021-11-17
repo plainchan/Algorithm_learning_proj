@@ -6,13 +6,13 @@ using namespace std;
 
 int main()
 {
-    RoateArray *r;
+    RoateArray *r = new RoateArray;
 
     vector<vector<int>> a;
 
-    a = geneNArray(4);
+    a = geneArray();
     r->print(a);
-    r->rotateN(a);
+    r->rotate(a,false);
     r->print(a);
 
     return 0;
