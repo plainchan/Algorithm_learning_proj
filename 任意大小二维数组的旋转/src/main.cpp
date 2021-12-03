@@ -15,5 +15,7 @@ int main()
     r->rotate(a,false);
     r->print(a);
 
+
+    delete r;
     return 0;
 }
