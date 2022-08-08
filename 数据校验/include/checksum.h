@@ -1,11 +1,10 @@
 #ifndef __CHECKSUM_H__
 #define __CHECKSUM_H__
 
-
-
 #ifdef __cplusplus
 extern "C"{
 #endif
+
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -35,6 +34,18 @@ uint8_t checksum_8(const uint8_t *buff,const size_t size)
     return !(check>>8+check&0x00FF);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #ifdef __cplusplus

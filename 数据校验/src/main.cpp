@@ -1,13 +1,20 @@
-#include <iostream>
+#include "utility.h"
 #include "checksum.h"
+#include "crc8.h"
 #include "crc16.h"
 using namespace std;
 
 int main()
 {
-    uint8_t buff[20]={0x12,0x34,0x56,0x78,0x9F,0x12,0x34,0x56,0x78,0x9F,0x12,0x34,0x56,0x78,0x9F,0x12,0x34,0x56,0x78,0x9F};
+    uint16_t crc16_ibm_table[256];
 
-
-    printf("%x\n",crc16(buff,20));
-    return 0;
+    uint8_t *buff = generateRandomBuff(10000); 
+    creat_crc16_table(crc16_ibm_table);
+    
+    printf("crc = 0x%x\n",crc16(buff,10000));
+    printf("crc table = 0x%x\n",crc16_lookup(crc16_ibm_table,buff,10000));
+  
+    // print(buff,100);
+    
+    free(buff);
 }

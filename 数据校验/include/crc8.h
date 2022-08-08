@@ -1,11 +1,18 @@
 #ifndef __CRC_8_H__
 #define __CRC_8_H__
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
+
 #include <stdint.h>
 #include <stdlib.h>
 
 #define     CRC_POLY_8      0x07
 #define		CRC_START_8		0x00
+
+
 
 static uint8_t crc8_tab[] = {
 
@@ -27,14 +34,16 @@ static uint8_t crc8_tab[] = {
 	130, 179, 224, 209, 70,  119, 36,  21,  59,  10,  89,  104, 255, 206, 157, 172
 };
 
-/*
- * uint8_t crc_8( const unsigned char *input_str, size_t num_bytes );
- *
- * The function crc_8() calculates the 8 bit wide CRC of an input string of a
- * given length.
- */
 
-uint8_t crc_8( const unsigned char *input_str, size_t num_bytes ) {
+/**
+ * @brief 
+ * 
+ * @param table 
+ * @param input_str 
+ * @param num_bytes 
+ * @return uint8_t 
+ */
+uint8_t crc8_lookup(const unsigned char *table, const unsigned char *input_str, size_t num_bytes ) {
 
 	uint8_t crc;
 	const unsigned char *ptr;
@@ -44,7 +53,7 @@ uint8_t crc_8( const unsigned char *input_str, size_t num_bytes ) {
 
 	if ( ptr != NULL ) for (size_t i=0; i<num_bytes; ++i) {
 
-		crc = crc8_tab[(*ptr++) ^ crc];
+		crc = table[(*ptr++) ^ crc];
 	}
 
 	return crc;
@@ -52,14 +61,13 @@ uint8_t crc_8( const unsigned char *input_str, size_t num_bytes ) {
 
 }  /* crc_8 */
 
-/*
- * uint8_t update_crc_8( unsigned char crc, unsigned char val );
- *
- * Given a databyte and the previous value of the CRC value, the function
- * update_crc_8() calculates and returns the new actual CRC value of the data
- * comming in.
+/**
+ * @brief 字节流更新
+ * 
+ * @param crc 
+ * @param val 
+ * @return uint8_t 
  */
-
 uint8_t update_crc_8( unsigned char crc, unsigned char val ) {
 
 	return crc8_tab[val ^ crc];
@@ -67,6 +75,81 @@ uint8_t update_crc_8( unsigned char crc, unsigned char val ) {
 }  /* update_crc_8 */
 
 
+/**
+ * NAME: CRC-8      
+ * POLY: 0x07  (x8 + x2 + x + 1)
+ * INIT:  0x00
+ * REFIN:  false
+ * REFOUT: false
+ * XOROUT: 0x00
+ */
+uint8_t crc8(uint8_t *bytes,uint32_t len)
+{
+	uint8_t crc = 0;
+	uint8_t ploy = 0x07;
+	while(len-->0 && bytes!=NULL)
+	{
+		crc ^= *bytes++;
+		for(int i =0;i<8;++i)
+		{
+			if(crc&0x80)
+				crc = (crc<<1)^ploy;
+			else
+				crc<<=1;
+		}
+	}
+	return crc;
+}
+
+
+/**
+ * NAME: CRC-8/MAXIM  
+ * POLY: 0x31  (x8 + x5 + x4 + 1)
+ * INIT:  0x00
+ * REFIN:  true
+ * REFOUT: true
+ * XOROUT: 0x00
+ */
+uint8_t crc8_maxim(uint8_t *bytes,uint32_t len)
+{
+	uint8_t crc = 0;
+	uint8_t ploy = 0x8c;
+	while(len-->0 && bytes!=NULL)
+	{
+		crc ^= *bytes++;
+		for(int i =0;i<8;++i)
+		{
+			if(crc&1)
+				crc = (crc>>1)^ploy;
+			else
+				crc>>=1;
+		}
+	}
+	return crc;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ifdef __cplusplus
+}
+#endif  /* C */
 
 
 #endif
