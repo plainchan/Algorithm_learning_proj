@@ -39,7 +39,7 @@ uint8_t* generateRandomBuff(uint32_t len)
 void print(uint8_t *bytes,uint32_t len)
 {
 	for(int i =0;i<len;++i)
-		printf("%x ",bytes[i]);
+		printf("%.2x ",bytes[i]);
 	printf("\n");
 }
 

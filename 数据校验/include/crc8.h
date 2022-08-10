@@ -130,6 +130,24 @@ uint8_t crc8_maxim(uint8_t *bytes,uint32_t len)
 
 
 
+void creat_crc8_table(uint8_t *table)
+{
+    uint8_t poly = 0x07;
+    for(uint16_t i=0;i<256;++i)
+    {
+        uint8_t crc = 0,c = i;
+
+        for(uint8_t j=0;j<8;++j)
+        {
+            if((crc^c)&0x80) crc = (crc<<1)^poly;
+            else crc<<=1;
+            c <<= 1;
+        }
+        
+        table[i]=crc;
+    }
+}
+
 
 
 
