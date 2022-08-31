@@ -1,77 +1,89 @@
-#include <iostream>
+#ifndef TSORT_HPP
+#define TSORT_HPP
+
+#include <vector>
 #include <ctime>
 #include <cassert>
-#include <algorithm>
-#include "sort.h"
+#include <typeinfo>
+
+#define Rand_LE100 rand()%101
+
+enum sort_type
+{
+  bubble,
+  selection,
+  insertion,
+  shell,
+  quick,
+  merging,
+  heap
+};
+
+
 
 //冒泡排序
-void bubbleSort(std::vector<int> &arr)
+template<typename T>
+void bubbleSort(std::vector<T> &arr)
 {
-  int n = arr.size();
+  size_t n = arr.size();
   if (n < 2)
     return;
-  int temp = 0;
-  for (int i = 0; i < n - 1; i++)
+  for (size_t i = 0; i < n - 1; i++)
   {
-    for (int j = 0; j < n - i - 1; j++)
+    for (size_t j = 0; j < n - i - 1; j++)
     {
       if (arr[j] > arr[j + 1])
-      {
-        temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
+        std::swap(arr[j],arr[j + 1]);
     }
   }
 }
 //选择排序
-void selectionSort(std::vector<int> &arr)
+template<typename T>
+void selectionSort(std::vector<T> &arr)
 {
-  int n = arr.size();
-  int min_index = 0;
-  for (int i = 0; i < n; i++)
+  size_t n = arr.size();
+  size_t min_index = 0;
+  for (size_t i = 0; i < n; i++)
   {
     min_index = i;
-    for (int j = i + 1; j < n; j++)
+    for (size_t j = i + 1; j < n; j++)
     {
       if (arr[j] < arr[min_index])
         min_index = j;
     }
     if (i != min_index)
-    {
-      int temp = arr[i];
-      arr[i] = arr[min_index];
-      arr[min_index] = temp;
-    }
+        std::swap(arr[i],arr[min_index]);  
   }
 }
 
 //插入排序
-void insertionSort(std::vector<int> &arr)
+template<typename T>
+void insertionSort(std::vector<T> &arr)
 {
-  int n = arr.size();
-  for (int i = 1; i < n; i++)
+  size_t n = arr.size();
+  for (size_t i = 1; i < n; i++)
   {
-    int temp = arr[i];
-    int j = i - 1;
+    size_t temp = arr[i];
+    size_t j = i - 1;
     while (j >= 0 and temp < arr[j])
     {
       arr[j + 1] = arr[j];
-      j--;
+      --j;
     }
     arr[j + 1] = temp;
   }
 }
 
-void shellSort(std::vector<int> &arr)
+template<typename T>
+void shellSort(std::vector<T> &arr)
 {
-  int len =arr.size();
+  size_t len =arr.size();
 
 #ifndef other
-  for(int gap=len/2;gap>0;gap/=2)
+  for(size_t gap=len/2;gap>0;gap/=2)
   {
-    for(int i=gap;i <len;i++)
-      for(int j=i-gap;j>=0;j-=gap)
+    for(size_t i=gap;i <len;i++)
+      for(size_t j=i-gap;j>=0;j-=gap)
       {
         if(arr[j]<arr[j+gap])
           break;
@@ -88,29 +100,24 @@ void shellSort(std::vector<int> &arr)
 #undef other
 }
 //快速排序
-void quickSort(std::vector<int> &arr, int left, int right)
+template<typename T>
+void quickSort(std::vector<T> &arr, int left, int right)
 {
   // assert(left >= 0);
   // assert(right < int(arr.size()));
   if (left < right)
   {
-    int pivot = arr[right];
-    int i = left - 1;
-    int temp = 0;
+    size_t pivot = arr[right];
+    size_t i = left - 1;
+    size_t temp = 0;
 
     // partition
-    for (int j = left; j < right; j++)
+    for (size_t j = left; j < right; j++)
     {
       if (arr[j] < pivot)
-      {
-        temp = arr[++i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-      }
+        std::swap(arr[j],arr[++i]);
     }
-    temp = arr[++i];
-    arr[i] = pivot;
-    arr[right] = temp;
+    std::swap(arr[right],arr[++i]);
 
     // recursion
     quickSort(arr, left, i - 1);
@@ -118,18 +125,19 @@ void quickSort(std::vector<int> &arr, int left, int right)
   }
 }
 // 归并排序
-void merge(std::vector<int> &arr,int l,int m,int r)
+template<typename T>
+void merge(std::vector<T> &arr,int l,int m,int r)
 {
-  int L_SIZE=m-l+1;
-  int R_SIZE=r-m;
+  size_t L_SIZE=m-l+1;
+  size_t R_SIZE=r-m;
 
-  std::vector<int>L(L_SIZE);
-  std::vector<int>R(R_SIZE);
+  std::vector<T>L(L_SIZE);
+  std::vector<T>R(R_SIZE);
 
-  for(int i=0;i<L_SIZE;i++) L[i]=arr[i+l];
-  for(int j=0;j<R_SIZE;j++) R[j]=arr[j+m+1];
+  for(size_t i=0;i<L_SIZE;i++) L[i]=arr[i+l];
+  for(size_t j=0;j<R_SIZE;j++) R[j]=arr[j+m+1];
 
-  int i=0,j=0,k=l;
+  size_t i=0,j=0,k=l;
   while(i<L_SIZE or j<R_SIZE)
   {
     if(j>=R_SIZE or (i<L_SIZE and L[i]<R[j]))
@@ -146,23 +154,27 @@ void merge(std::vector<int> &arr,int l,int m,int r)
   }
 
 }
-void mergeSort(std::vector<int> &arr,int left,int right)
+template<typename T>
+void mergeSort(std::vector<T> &arr,int left,int right)
 {
   if(left < right)
   {
-    int mid =left+(right-left)/2;
+    size_t mid =left+(right-left)/2;
   
     mergeSort(arr,left,mid);
     mergeSort(arr,mid+1,right);
     merge(arr,left,mid,right);
   }
 }
+
 //堆排序
-void heapify(std::vector<int> &arr,int n,int i)
+//https://www.cnblogs.com/chengxiao/p/6129630.html
+template<typename T>
+void heapify(std::vector<T> &arr,int n,int i)
 {
-  int largest = i;
-  int left = 2*i+1;
-  int right = 2*i+2;
+  size_t largest = i;
+  size_t left = 2*i+1;
+  size_t right = 2*i+2;
 
   if(left < n and arr[left] > arr[largest])
     largest = left;
@@ -174,12 +186,13 @@ void heapify(std::vector<int> &arr,int n,int i)
     heapify(arr,n,largest);
   }
 }
-void heapSort(std::vector<int> &arr)
+template<typename T>
+void heapSort(std::vector<T> &arr)
 {
-  int n =arr.size();
+  size_t n =arr.size();
   for(int i=n-1;i>=0;i--)
     heapify(arr,n,i);
-  for(int i=n-1;i>=0;i--)
+  for(size_t i=n-1;i>=0;i--)
   {
     std::swap(arr[0],arr[i]);
     heapify(arr,i,0);
@@ -231,12 +244,14 @@ std::vector<int> geneVector(int min,int max)
   }
   return arr;
 }
+
 //打印数组
-void print(std::vector<int> &arr)
+template<typename T>
+void print(std::vector<T> &arr)
 {
   int n = arr.size();
   std::cout << "[";
-  for (int i = 0; i < n; i++)
+  for (size_t i = 0; i < n; i++)
   {
     if (i == n - 1)
       std::cout << arr[i] << "]"
@@ -245,3 +260,24 @@ void print(std::vector<int> &arr)
       std::cout << arr[i] << " ";
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
