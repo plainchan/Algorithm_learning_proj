@@ -105,7 +105,19 @@ void insertsort(vector<int> &arr)
  */
 void shellsort(vector<int> &arr)
 {
-
+    int n = arr.size();
+    for(int gap=n/2;gap>0;gap/=2)
+    {
+        for(int i=gap;i<n;++i)
+        {
+            for(int j=i-gap;j>=0;j-=gap)
+            {
+                if(arr[j]<arr[j+gap])
+                    break;
+                swap(arr[j],arr[j+gap]);
+            }
+        }
+    }
 }
 /**
  * @brief 归并排序
@@ -210,10 +222,11 @@ int main()
     vector<int> arr1(arr);
 
     sort(arr1.begin(), arr1.end());
-    mergesort(arr,0,arr.size()-1);
+    // mergesort(arr,0,arr.size()-1);
+    shellsort(arr);
 
-    print(arr);
     print(arr1);
+    print(arr);
     if (arr1 == arr)
             cout << "same," << SIZE << endl;
     return 0;

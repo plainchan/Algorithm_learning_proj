@@ -10,8 +10,8 @@ using namespace std;
 using namespace chrono;
 
 
-#define SIZE 10000000
-sort_type type= merging;
+#define SIZE 500000
+sort_type type = quick;
 int main()
 {
   high_resolution_clock::time_point total_start, total_end;
@@ -20,13 +20,13 @@ int main()
   high_resolution_clock::time_point start, end;
   duration<double> time_span;
 
-  auto arr = geneVector(SIZE);
+  //vector本身有移动构造，已经优化
+  auto arr = geneVector(SIZE,1,10);
+  auto arr1= arr;
 
-  auto arr1=arr;
-  
   std::future<void> stl_sort = std::async([&]()
   {
-    
+
     high_resolution_clock::time_point start1,end1;
     duration<double> time_span1;
     start1 = high_resolution_clock::now();
@@ -34,11 +34,10 @@ int main()
     end1 = high_resolution_clock::now();
     // print(arr1);
     time_span1 = duration_cast<duration<double>>(end1 - start1);
-    cout << "STL sort" << "." 
-         << "The sorting time is " << time_span1.count() << " seconds." 
+    cout << "STL sort" << "."
+         << "The sorting time is " << time_span1.count() << " seconds."
          << " size = " << SIZE << endl;
   });
-
 
   start = high_resolution_clock::now();
   string method;
@@ -59,14 +58,14 @@ int main()
   stl_sort.get();
   // print(arr);
   if (arr1 == arr)
-    cout << method << "." 
-         << "The sorting time is " << time_span.count() << " seconds." 
+    cout << method << "."
+         << "The sorting time is " << time_span.count() << " seconds."
          << " size = " << SIZE << endl;
   else
     cout << "Yourself sort algorithm is wrong" <<endl;
 
   total_end = high_resolution_clock::now();
-  time_span = duration_cast<duration<double>>(total_end  - total_start);
-  cout << "runtime " << time_span.count() << "s" <<endl;
+  time_span = duration_cast<duration<double>>(total_end - total_start);
+  cout << "runtime " << time_span.count() << "s" << endl;
   return 0;
 }
