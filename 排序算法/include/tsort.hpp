@@ -98,7 +98,7 @@ void shellSort(std::vector<T> &arr)
 #undef other
 }
 //快速排序
-//当数据方差比较小时，比较耗时
+//当数据方差比较小时(相同的数增多，交换次数变多))，比较耗时
 template <typename T>
 void quickSort(std::vector<T> &arr, int left, int right)
 {
